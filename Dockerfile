@@ -4,9 +4,11 @@ RUN curl -sL https://deb.nodesource.com/setup_10.x |  bash -
 RUN apt-get install -y nodejs
 RUN npm install -g npm
 
+
 WORKDIR /build/
 COPY . /build/
 
+RUN cd payments.web/ClientApp && npm install && cd ../..
 # Opt out of .NET Core's telemetry collection
 ENV DOTNET_CLI_TELEMETRY_OPTOUT 1
 ENV NODE_ENV production
