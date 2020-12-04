@@ -3,7 +3,6 @@ FROM mcr.microsoft.com/dotnet/sdk:5.0 as build
 RUN curl -sL https://deb.nodesource.com/setup_10.x |  bash -
 RUN apt-get install -y nodejs
 RUN npm install -g npm
-RUN npm install typescript
 
 WORKDIR /build/
 COPY . /build/
@@ -22,7 +21,7 @@ ENV DOTNET_CLI_TELEMETRY_OPTOUT 1
 ENV NODE_ENV production
 RUN dotnet publish payments.web -c Release -o /app --no-restore
 
-FROM mcr.microsoft.com/dotnet/runtime:5.0-alpine as run
+FROM mcr.microsoft.com/dotnet/sdk:5.0-alpine as run
 ENV DOTNET_CLI_TELEMETRY_OPTOUT 1
 
 COPY --from=publish /app /app
@@ -36,7 +35,8 @@ RUN chown 1001:0 payments.web.dll
 RUN chmod g+rwx payments.web.dll
 USER 1001
 
-EXPOSE 8080/tcp
-ENV ASPNETCORE_URLS http://*:8080
+ARG PORT
+EXPOSE $PORT
+ENV ASPNETCORE_URLS http://*:$PORT/
 
 ENTRYPOINT ["dotnet", "payments.web.dll"]
