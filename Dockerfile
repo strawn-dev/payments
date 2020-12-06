@@ -37,8 +37,4 @@ RUN chown 1001:0 payments.web.dll
 RUN chmod g+rwx payments.web.dll
 USER 1001
 
-ARG PORT
-EXPOSE $PORT
-ENV ASPNETCORE_URLS http://*:$PORT/
-
-ENTRYPOINT ["dotnet", "payments.web.dll"]
+CMD ASPNETCORE_URLS=http://*:$PORT dotnet payments.web.dll
